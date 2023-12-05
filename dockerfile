@@ -1,20 +1,24 @@
-# Gebruik een bestaande Go-afbeelding als basis
-FROM golang:alpine
+# Use the official Golang image
+FROM golang:latest
 
-# Voeg de code toe aan de werkmap /app in de container
-ADD . /app
-
-# Stel de werkmap in als werkdirectory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Installeer afhankelijkheden
+# Copy the Go modules files
+COPY go.mod .
+COPY go.sum .
+
+# Download and install Go dependencies
 RUN go mod download
 
-# Bouw de applicatie binnen de container
+# Copy the source code into the container
+COPY . .
+
+# Build the Go application
 RUN go build -o main .
 
-# Expose de poort waarnaar wordt geluisterd
-EXPOSE 8080
+# Expose the port the app runs on
+EXPOSE 80
 
-# Start de applicatie als de container wordt gestart
-CMD ["/app/main"]
+# Command to run the executable
+CMD ["./main"]
