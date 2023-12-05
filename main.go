@@ -14,8 +14,17 @@ import (
 )
 
 type Data struct {
-	Name         string `json:"name"`
+	UserID       string `json:"userid"`
+	FirstName    string `json:"firstname"`
+	LastName     string `json:"lastname"`
 	Email        string `json:"email"`
+	Phonenumber  string `json:"phonenumber"`
+	Postalcode   string `json:"postalcode"`
+	Housenumber  string `json:"housenumber"`
+	Street       string `json:"street"`
+	Town         string `json:"town"`
+	Country      string `json:"country"`
+	Birthdate    string `json:"birthdate"`
 	Licenseplate string `json:"licenseplate"`
 }
 
@@ -61,7 +70,7 @@ func main() {
 		if licenseplate != "" {
 			info := db.QueryRow("SELECT firstname FROM reservering WHERE licenseplate=? AND checkout >=?", licenseplate, currentDate)
 			var data Data
-			err = info.Scan(&data.Name)
+			err = info.Scan(&data.FirstName)
 			if err != nil {
 				if err == sql.ErrNoRows {
 					http.Error(w, "licenseplate or date not valid", http.StatusNotFound)
@@ -77,6 +86,7 @@ func main() {
 			http.Error(w, "Please enter an licenseplate", http.StatusNotFound)
 		}
 	})
+
 	http.HandleFunc("/reservering", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
@@ -102,7 +112,8 @@ func main() {
 		}
 
 	})
-	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+
+	http.HandleFunc("/user/add", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -158,6 +169,136 @@ func main() {
 		}
 
 	})
+
+	http.HandleFunc("/user/modify", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		case http.MethodPost:
+			firstname := r.URL.Query().Get("firstname")
+			lastname := r.URL.Query().Get("lastname")
+			birthdate := r.URL.Query().Get("birthdate")
+			town := r.URL.Query().Get("town")
+
+			email := r.URL.Query().Get("email")
+			oldpassword := r.URL.Query().Get("oldpassword")
+			newpassword := r.URL.Query().Get("newpassword")
+			phonenumber := r.URL.Query().Get("phonenumber")
+			licenseplate := r.URL.Query().Get("licenseplate")
+
+			if firstname != "" && lastname != "" && birthdate != "" && town != "" {
+				oldhashedPassword, err := bcrypt.GenerateFromPassword([]byte(oldpassword), bcrypt.DefaultCost)
+				if err != nil {
+					http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+					return
+				}
+				newhashedPassword, err := bcrypt.GenerateFromPassword([]byte(newpassword), bcrypt.DefaultCost)
+				if err != nil {
+					http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+					return
+				}
+
+				info := db.QueryRow("SELECT userid, email FROM user WHERE firstname=? AND lastname=? AND birthdate=? AND town =?", firstname, lastname, birthdate, town)
+				var data Data
+				err = info.Scan(&data.UserID, &data.Email)
+				if err != nil {
+					if err == sql.ErrNoRows {
+						http.Error(w, "There is no user found", http.StatusConflict)
+						return
+					}
+				}
+				if email != "" {
+					db.QueryRow("UPDATE user SET email=? WHERE userid=?", email, data.UserID)
+				} else if newpassword != "" {
+					db.QueryRow("UPDATE user SET password=? WHERE userid=? AND password=?", newhashedPassword, data.UserID, oldhashedPassword)
+				} else if phonenumber != "" {
+					db.QueryRow("UPDATE user SET phonenumber=? WHERE userid=?", phonenumber, data.UserID)
+				} else if licenseplate != "" {
+					db.QueryRow("UPDATE user SET licenseplate=? WHERE userid=?", licenseplate, data.UserID)
+				} else {
+					http.Error(w, "Please enter all data necessary", http.StatusNotFound)
+				}
+				http.Error(w, "User modified", http.StatusOK)
+			} else {
+				http.Error(w, "Please enter all data necessary", http.StatusNotFound)
+			}
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/user/delete", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		case http.MethodPost:
+			email := r.URL.Query().Get("email")
+			password := r.URL.Query().Get("password")
+			if email != "" && password != "" {
+				var hashedPassword string
+				err = db.QueryRow("SELECT password FROM user WHERE email=?", email).Scan(&hashedPassword)
+				if err != nil {
+					if err == sql.ErrNoRows {
+						http.Error(w, "email or password not valid", http.StatusNotFound)
+						return
+					}
+					http.Error(w, "Database error", http.StatusInternalServerError)
+					return
+				}
+				err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+				if err != nil {
+					http.Error(w, "email or password not valid", http.StatusNotFound)
+					return
+				}
+				db.QueryRow("DELETE FROM user WHERE email=?", email)
+				http.Error(w, "User deleted", http.StatusOK)
+			} else {
+				http.Error(w, "Please enter email and password", http.StatusNotFound)
+			}
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/user/get", func(w http.ResponseWriter, r *http.Request) {
+		email := r.URL.Query().Get("email")
+		password := r.URL.Query().Get("password")
+		if email != "" && password != "" {
+			var hashedPassword string
+			err = db.QueryRow("SELECT password FROM user WHERE email=?", email).Scan(&hashedPassword)
+			if err != nil {
+				if err == sql.ErrNoRows {
+					http.Error(w, "email or password not valid", http.StatusNotFound)
+					return
+				}
+				http.Error(w, "Database error", http.StatusInternalServerError)
+				return
+			}
+			err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+			if err != nil {
+				http.Error(w, "email or password not valid", http.StatusNotFound)
+				return
+			}
+			info := db.QueryRow("SELECT firstname, lastname, email, phonenumber, postalcode, housenumber, street, town, country, birthdate, licenseplate FROM user WHERE email=?", email)
+			var data Data
+			err = info.Scan(&data.FirstName, &data.LastName, &data.Email, &data.Phonenumber, &data.Postalcode, &data.Housenumber, &data.Street, &data.Town, &data.Country, &data.Birthdate, &data.Licenseplate)
+			if err != nil {
+				if err == sql.ErrNoRows {
+					http.Error(w, "email or password not valid", http.StatusNotFound)
+					return
+				}
+				http.Error(w, "Database error", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(data)
+			return
+		} else {
+			http.Error(w, "Please enter email and password", http.StatusNotFound)
+		}
+	})
+
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		email := r.URL.Query().Get("email")
 		password := r.URL.Query().Get("password")
@@ -182,5 +323,5 @@ func main() {
 			http.Error(w, "Please enter email and password", http.StatusNotFound)
 		}
 	})
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":80", nil))
 }
