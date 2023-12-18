@@ -38,7 +38,7 @@ type Config struct {
 
 func getconfig() (string, string, string, string, string) {
 	// Read the content of the aconfig.json file
-	data, err := os.ReadFile("config.json")
+	data, err := os.ReadFile("config/config.json")
 	if err != nil {
 		fmt.Println("Error reading config.json:", err)
 		return "", "", "", "", ""
