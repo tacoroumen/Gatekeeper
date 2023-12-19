@@ -20,8 +20,19 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sso:${{ github.sha }}
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sso:${{ github.sha }}
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sso:${{ github.run_number	 }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sso:${{ github.run_number	 }}
+
+      - name: 'Build and push image'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sso:latest
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sso:latest
+  
 
       - name: 'Deploy to Azure Container Instances'
         uses: 'azure/aci-deploy@v1'
@@ -34,6 +45,3 @@ jobs:
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: sso
           location: 'germanynorth'
-          environment-variables: |
-            SSO_STATE=${{ secrets.SSO_STATE }}
-            SSO_CLIENT_SECRET=${{ secrets.SSO_CLIENT_SECRET }}
