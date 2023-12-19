@@ -38,7 +38,7 @@ type Config struct {
 
 func getconfig() (string, string, string, string, string) {
 	// Read the content of the aconfig.json file
-	data, err := os.ReadFile("config/config.json")
+	data, err := os.ReadFile("config.json")
 	if err != nil {
 		fmt.Println("Error reading config.json:", err)
 		return "", "", "", "", ""
@@ -68,7 +68,7 @@ func main() {
 	http.HandleFunc("/licenseplate", func(w http.ResponseWriter, r *http.Request) {
 		licenseplate := r.URL.Query().Get("licenseplate")
 		if licenseplate != "" {
-			info := db.QueryRow("SELECT firstname FROM reservering WHERE licenseplate=? AND checkout >=?", licenseplate, currentDate)
+			info := db.QueryRow("SELECT firstname FROM user INNER JOIN reservering ON user.userid = reservering.userid WHERE licenseplate = ? AND checkout >= ?", licenseplate, currentDate)
 			var data Data
 			err = info.Scan(&data.FirstName)
 			if err != nil {
