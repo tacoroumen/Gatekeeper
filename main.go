@@ -14,18 +14,18 @@ import (
 )
 
 type Data struct {
-	UserID       string `json:"userid"`
-	FirstName    string `json:"firstname"`
-	LastName     string `json:"lastname"`
-	Email        string `json:"email"`
-	Phonenumber  string `json:"phonenumber"`
-	Postalcode   string `json:"postalcode"`
-	Housenumber  string `json:"housenumber"`
-	Street       string `json:"street"`
-	Town         string `json:"town"`
-	Country      string `json:"country"`
-	Birthdate    string `json:"birthdate"`
-	Licenseplate string `json:"licenseplate"`
+	UserID       string `json:"userid,omitempty"`
+	FirstName    string `json:"firstname,omitempty"`
+	LastName     string `json:"lastname,omitempty"`
+	Email        string `json:"email,omitempty"`
+	Phonenumber  string `json:"phonenumber,omitempty"`
+	Postalcode   string `json:"postalcode,omitempty"`
+	Housenumber  string `json:"housenumber,omitempty"`
+	Street       string `json:"street,omitempty"`
+	Town         string `json:"town,omitempty"`
+	Country      string `json:"country,omitempty"`
+	Birthdate    string `json:"birthdate,omitempty"`
+	Licenseplate string `json:"licenseplate,omitempty"`
 }
 
 type Config struct {
