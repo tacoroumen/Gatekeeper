@@ -36,7 +36,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: proftaak2.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5580b75f8b0b494fac83c5cb96cc6eca }}/gatekeeper:latest
+        tags: fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5580b75f8b0b494fac83c5cb96cc6eca }}/gatekeeper:latest
         file: ./Dockerfile
 
   deploy:
