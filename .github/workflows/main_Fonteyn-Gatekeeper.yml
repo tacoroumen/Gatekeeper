@@ -30,15 +30,15 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5580b75f8b0b494fac83c5cb96cc6eca }}/gatekeeper:latest
+        tags: fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5580b75f8b0b494fac83c5cb96cc6eca }}/gatekeeper:${{ github.run_number	 }}
         file: ./Dockerfile
-
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: proftaak2.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5580b75f8b0b494fac83c5cb96cc6eca }}/sso:${{ github.run_number	 }}
+        tags: proftaak2.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5580b75f8b0b494fac83c5cb96cc6eca }}/gatekeeper:latest
         file: ./Dockerfile
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -51,7 +51,7 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'Fonteyn-Gatekeeper'
+        app-name: 'fonteyn-gatekeeper'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_6c612df16605490490f7edb3f9005e5e }}
         images: 'fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5580b75f8b0b494fac83c5cb96cc6eca }}/gatekeeper:latest'
