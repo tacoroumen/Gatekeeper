@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b69e2ee2dddf49eebbdd236db44822f0 }}/gatekeeper:${{ github.sha }}
+        tags: fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b69e2ee2dddf49eebbdd236db44822f0 }}/gatekeeper:latest
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'Fonteyn-Gatekeeper'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_c27d96cb2d124101812dfa3618a0a6bf }}
-        images: 'fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b69e2ee2dddf49eebbdd236db44822f0 }}/gatekeeper:${{ github.sha }}'
+        images: 'fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b69e2ee2dddf49eebbdd236db44822f0 }}/gatekeeper:latest'
