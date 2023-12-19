@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy container app to Azure Web App - Fonteyn-Gatekeeper
+name: Build and deploy container app to Azure Web App - fonteyn-gatekeeper
 
 on:
   push:
@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://fonteyn.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_b69e2ee2dddf49eebbdd236db44822f0 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_ef10b6c63aca44739ed33843509f3b78 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_209570a09ce343fa999da45afd0491df }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_0eec0f71629849019d2079d07bf77f4f }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b69e2ee2dddf49eebbdd236db44822f0 }}/gatekeeper:latest
+        tags: fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_209570a09ce343fa999da45afd0491df }}/gatekeeper:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -45,7 +45,7 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'Fonteyn-Gatekeeper'
+        app-name: 'fonteyn-gatekeeper'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c27d96cb2d124101812dfa3618a0a6bf }}
-        images: 'fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b69e2ee2dddf49eebbdd236db44822f0 }}/gatekeeper:latest'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c4dc85249514408ba76eef93f1942cd9 }}
+        images: 'fonteyn.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_209570a09ce343fa999da45afd0491df }}/gatekeeper:${{ github.sha }}'
