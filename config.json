@@ -1,7 +1,7 @@
 {
 	"username": "Fonteyn",
 	"password": "Proftaak02",
-	"ip": "reservering.fonteyn-pep.com",
+	"ip": "reservering.privatelink.mysql.database.azure.com",
 	"port": "3306",
 	"database": "reserveringen"
 }
