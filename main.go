@@ -73,10 +73,9 @@ func main() {
 			err = info.Scan(&data.FirstName)
 			if err != nil {
 				if err == sql.ErrNoRows {
-					http.Error(w, "licenseplate or date not valid", http.StatusNotFound)
+					http.Error(w, "licenseplate not allowed", http.StatusNotFound)
 					return
 				}
-				//fmt.Println(err) //test
 				http.Error(w, "Database error", http.StatusInternalServerError)
 				return
 			}
