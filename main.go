@@ -76,6 +76,7 @@ func main() {
 					http.Error(w, "licenseplate or date not valid", http.StatusNotFound)
 					return
 				}
+				fmt.Println(err) //test
 				http.Error(w, "Database error", http.StatusInternalServerError)
 				return
 			}
