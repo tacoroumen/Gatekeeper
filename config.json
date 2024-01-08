@@ -1,7 +1,7 @@
 {
 	"username": "Fonteyn",
 	"password": "Proftaak02",
-	"ip": "reservering.privatelink.azurewebsites.net",
+	"ip": "reservering.Fonteyn.PEP.com",
 	"port": "3306",
 	"database": "reserveringen"
 }
