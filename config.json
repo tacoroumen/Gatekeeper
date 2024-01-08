@@ -1,7 +1,7 @@
 {
 	"username": "Fonteyn",
 	"password": "Proftaak02",
-	"ip": "10.2.0.5",
+	"ip": "reservering.fonteyn-pep.com",
 	"port": "3306",
 	"database": "reserveringen"
 }
