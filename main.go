@@ -141,10 +141,10 @@ func main() {
 				var data Data
 				err = info.Scan(&data.Email)
 				if err != nil {
-					if err != sql.ErrNoRows {
-						http.Error(w, "user with this email already excists", http.StatusConflict)
-						return
-					}
+					//if err != sql.ErrNoRows {
+					//	http.Error(w, "user with this email already excists", http.StatusConflict)
+					//	return
+					//}
 				}
 				info = db.QueryRow("SELECT * FROM user WHERE licenseplate=?", licenseplate)
 				err = info.Scan(&data.Licenseplate)
