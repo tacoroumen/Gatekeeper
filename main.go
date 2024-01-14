@@ -94,11 +94,27 @@ func main() {
 		case http.MethodPost:
 			checkin := r.URL.Query().Get("checkin")
 			checkout := r.URL.Query().Get("checkout")
-			userid := r.URL.Query().Get("userid")
+			email := r.URL.Query().Get("email")
 			housenumber := r.URL.Query().Get("housenumber")
+			password := r.URL.Query().Get("password")
 
-			if checkin != "" && checkout != "" && userid != "" && housenumber != "" {
-				db.QueryRow("INSERT INTO `reserveringen`.`reservering` (`checkin`, `checkout`, `userid`, `housenumber`) VALUES (?, ?, ?, ?)", checkin, checkout, userid, housenumber)
+			if checkin != "" && checkout != "" && email != "" && housenumber != "" && password != "" {
+				var hashedPassword string
+				err = db.QueryRow("SELECT password FROM user WHERE email=?", email).Scan(&hashedPassword)
+				if err != nil {
+					if err == sql.ErrNoRows {
+						http.Error(w, "email or password not valid", http.StatusNotFound)
+						return
+					}
+					http.Error(w, "Database error", http.StatusInternalServerError)
+					return
+				}
+				err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+				if err != nil {
+					http.Error(w, "email or password not valid", http.StatusNotFound)
+					return
+				}
+				db.QueryRow("INSERT INTO reservering (userid, checkin, checkout, housenumber) VALUES ((SELECT userid FROM user WHERE email = ?), ?, ?, ?)", email, checkin, checkout, housenumber)
 				if err != nil {
 					http.Error(w, "Database error", http.StatusInternalServerError)
 					return
