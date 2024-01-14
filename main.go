@@ -137,7 +137,7 @@ func main() {
 					http.Error(w, "Failed to hash password", http.StatusInternalServerError)
 					return
 				}
-				info := db.QueryRow("SELECT * FROM user WHERE email=?", email)
+				info := db.QueryRow("SELECT email FROM user WHERE email=?", email)
 				var data Data
 				err = info.Scan(&data.Email)
 				if err != nil {
@@ -147,7 +147,7 @@ func main() {
 						return
 					}
 				}
-				info = db.QueryRow("SELECT * FROM user WHERE licenseplate=?", licenseplate)
+				info = db.QueryRow("SELECT licenseplate FROM user WHERE licenseplate=?", licenseplate)
 				err = info.Scan(&data.Licenseplate)
 				if err != nil {
 					if err != sql.ErrNoRows {
