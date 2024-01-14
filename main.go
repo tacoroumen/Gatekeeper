@@ -121,7 +121,7 @@ func main() {
 				}
 				http.Error(w, "Reservation added", http.StatusOK)
 			} else {
-				http.Error(w, "Please enter checkin, checkout, userid and housenumber", http.StatusNotFound)
+				http.Error(w, "Please enter checkin, checkout, email, password and housenumber", http.StatusNotFound)
 			}
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
