@@ -68,7 +68,7 @@ func main() {
 	http.HandleFunc("/licenseplate", func(w http.ResponseWriter, r *http.Request) {
 		licenseplate := r.URL.Query().Get("licenseplate")
 		if licenseplate != "" {
-			info := db.QueryRow("SELECT firstname FROM user INNER JOIN reservering ON user.userid = reservering.userid WHERE licenseplate = ? AND checkout >= ?", licenseplate, currentDate)
+			info := db.QueryRow("SELECT firstname FROM user INNER JOIN reservering ON user.userid = reservering.userid WHERE licenseplate = ? AND checkout >= ? AND checkin <= ?", licenseplate, currentDate, currentDate)
 			var data Data
 			err = info.Scan(&data.FirstName)
 			if err != nil {
