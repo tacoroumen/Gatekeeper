@@ -94,8 +94,8 @@ func main() {
 		case http.MethodPost:
 			checkin := r.URL.Query().Get("checkin")
 			checkout := r.URL.Query().Get("checkout")
-			email := r.URL.Query().Get("email")
 			housenumber := r.URL.Query().Get("housenumber")
+			email := r.URL.Query().Get("email")
 			password := r.URL.Query().Get("password")
 
 			if checkin != "" && checkout != "" && email != "" && housenumber != "" && password != "" {
