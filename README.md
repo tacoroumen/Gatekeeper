@@ -19,7 +19,7 @@ This is a simple Go application that provides a REST API for user management. It
 2. Navigate to the project directory:
 
    ```bash
-   cd your-repo
+   cd Gatekeeper
    ```
 
 3. Install dependencies:
@@ -37,7 +37,7 @@ This is a simple Go application that provides a REST API for user management. It
 5. Run the application:
 
    ```bash
-   ./your-repo
+   ./gatekeeper
    ```
 
 ## API Endpoints
