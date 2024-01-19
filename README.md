@@ -13,7 +13,7 @@ This is a simple Go application that provides a REST API for user management. It
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/your-repo.git
+   git clone https://github.com/tacoroumen/Gatekeeper.git
    ```
 
 2. Navigate to the project directory:
